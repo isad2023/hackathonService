@@ -12,7 +12,6 @@ from presentations.routers.team_router import team_router
 from presentations.routers.winner_solution_router import winner_solution_router
 
 from services.mock_data_service import MockDataService
-from services.hackathon_parser_service import HackathonParserService
 
 # Lifespan-событие
 @asynccontextmanager
@@ -24,11 +23,6 @@ async def lifespan(app: FastAPI):
     # Инициализация тестовых данных
     mock_data_service = MockDataService()
     await mock_data_service.initialize_mock_data()
-    
-    # Инициализация сервиса парсинга хакатонов
-    hackathon_parser_service = HackathonParserService()
-    await hackathon_parser_service.parse_and_save_hackathons()  # Первый запуск парсинга при старте
-    app.state.hackathon_parser_service = hackathon_parser_service
 
     yield  # Возвращаем управление приложению
 

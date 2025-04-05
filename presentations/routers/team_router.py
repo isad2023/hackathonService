@@ -24,6 +24,7 @@ team_router = APIRouter(
 class TeamDto(BaseModel):
     id: UUID
     ownerID: UUID
+    hackathon_id: UUID
     name: str
     max_size: int
     hacker_ids: List[UUID]  # Список ID хакеров, состоящих в команде
@@ -36,6 +37,7 @@ class TeamGetAllResponse(BaseModel):
 class TeamCreatePostRequest(BaseModel):
     name: str = Field(..., description="Team name")
     max_size: int = Field(..., description="Maximum team size")
+    hackathon_id: UUID = Field(..., description="Hackathon ID")
 
 
 class CreateTeamPostResponse(BaseModel):
@@ -49,6 +51,7 @@ class AddHackerToTeamRequest(BaseModel):
 class AddHackerToTeamResponse(BaseModel):
     id: UUID
     ownerID: UUID
+    hackathon_id: UUID
     name: str
     max_size: int
     hacker_ids: List[UUID]
@@ -57,6 +60,7 @@ class AddHackerToTeamResponse(BaseModel):
 class GetTeamByIdGetResponse(BaseModel):
     id: UUID
     ownerID: UUID
+    hackathon_id: UUID
     name: str
     max_size: int
     hacker_ids: List[UUID]
@@ -77,6 +81,36 @@ async def get_all(credentials: HTTPAuthorizationCredentials = Depends(security))
             TeamDto(
                 id=team.id,
                 ownerID=team.owner_id,
+                hackathon_id=team.hackathon_id,
+                name=team.name,
+                max_size=team.max_size,
+                hacker_ids=[hacker.id for hacker in team.hackers],
+            )
+            for team in teams
+        ]
+    )
+
+
+@team_router.get("/hackathon/{hackathon_id}", response_model=TeamGetAllResponse)
+async def get_teams_by_hackathon(
+    hackathon_id: UUID,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """
+    Получить список всех команд по ID хакатона.
+    Requires authentication.
+    """
+    claims = parse_jwt_token(credentials)
+    logger.info(f"team_get_by_hackathon: {hackathon_id} by user {claims.uid}")
+    
+    teams = await team_service.get_teams_by_hackathon_id(hackathon_id)
+    
+    return TeamGetAllResponse(
+        teams=[
+            TeamDto(
+                id=team.id,
+                ownerID=team.owner_id,
+                hackathon_id=team.hackathon_id,
                 name=team.name,
                 max_size=team.max_size,
                 hacker_ids=[hacker.id for hacker in team.hackers],
@@ -97,8 +131,28 @@ async def create(
     """
     claims = parse_jwt_token(credentials)
     user_id = claims.uid
-    logger.info(f"team_create: {request.name} by user {user_id}")
-    team_id, status_code = await team_service.create_team(user_id, request.name, request.max_size)
+    
+    # Получаем hacker_id по user_id
+    hacker_service = HackerService()
+    hacker, found = await hacker_service.get_hacker_by_user_id(user_id)
+    
+    if not found:
+        # Если хакер не найден, создаем его автоматически
+        logger.info(f"team_create: auto-creating hacker for user_id {user_id}")
+        default_name = f"Hacker-{user_id}"
+        hacker_id, success = await hacker_service.upsert_hacker(user_id, default_name)
+        
+        if not success or hacker_id is None:
+            logger.error(f"team_create: failed to auto-create hacker for user_id {user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Не удалось создать профиль хакера"
+            )
+    else:
+        hacker_id = hacker.id
+    
+    logger.info(f"team_create: {request.name} for hackathon {request.hackathon_id} by user {user_id}")
+    team_id, status_code = await team_service.create_team(hacker_id, request.name, request.max_size, request.hackathon_id)
 
     if status_code == -1:
         logger.error(f"team_create: invalid max_size {request.max_size}")
@@ -106,6 +160,9 @@ async def create(
     if status_code == -2:
         logger.error(f"team_create: team already exists")
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Команда с таким владельцем и названием уже существует")
+    if status_code == -3:
+        logger.error(f"team_create: hackathon not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Хакатон не найден")
 
     return CreateTeamPostResponse(
         id=team_id,
@@ -129,10 +186,20 @@ async def add_hacker_to_team(
     hacker, found = await hacker_service.get_hacker_by_user_id(user_id)
     
     if not found:
-        logger.error(f"team_add_hacker: hacker with user_id {user_id} not found")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Хакер не найден")
+        # Если хакер не найден, создаем его автоматически
+        logger.info(f"team_add_hacker: auto-creating hacker for user_id {user_id}")
+        default_name = f"Hacker-{user_id}"
+        hacker_id, success = await hacker_service.upsert_hacker(user_id, default_name)
+        
+        if not success or hacker_id is None:
+            logger.error(f"team_add_hacker: failed to auto-create hacker for user_id {user_id}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Не удалось создать профиль хакера"
+            )
+    else:
+        hacker_id = hacker.id
     
-    hacker_id = hacker.id
     logger.info(f"team_add_hacker: {request.team_id} hacker_id={hacker_id} by user {user_id}")
     
     team, status_code = await team_service.add_hacker_to_team(request.team_id, hacker_id)
@@ -156,6 +223,7 @@ async def add_hacker_to_team(
     return AddHackerToTeamResponse(
         id=team.id,
         ownerID=team.owner_id,
+        hackathon_id=team.hackathon_id,
         name=team.name,
         max_size=team.max_size,
         hacker_ids=[hacker.id for hacker in team.hackers],
@@ -182,6 +250,7 @@ async def get_my_teams(
             TeamDto(
                 id=team.id,
                 ownerID=team.owner_id,
+                hackathon_id=team.hackathon_id,
                 name=team.name,
                 max_size=team.max_size,
                 hacker_ids=[hacker.id for hacker in team.hackers],
@@ -211,6 +280,7 @@ async def get_by_id(
     return GetTeamByIdGetResponse(
         id=team.id,
         ownerID=team.owner_id,
+        hackathon_id=team.hackathon_id,
         name=team.name,
         max_size=team.max_size,
         hacker_ids=[hacker.id for hacker in team.hackers],

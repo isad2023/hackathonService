@@ -43,15 +43,11 @@ class HackathonService:
 
         return hackathon_id
 
-    async def get_hackathon_by_id(self, hackathon_id: UUID) -> Tuple[Hackathon, bool]:
+    async def get_hackathon_by_id(self, hackathon_id: UUID) -> Optional[Hackathon]:
         """
         Возвращает хакатон по ID.
 
-        :returns False Хакатон не найден
+        :returns None если хакатон не найден
         """
         hackathon = await self.hackathon_repository.get_hackathon_by_id(hackathon_id)
-
-        if not hackathon:
-            return None, False
-
-        return hackathon, True
+        return hackathon
