@@ -131,9 +131,9 @@ async def get_hackathon_by_id(
     """
     claims = parse_jwt_token(credentials)
     logger.info(f"hackathon_get_by_id: {hackathon_id} by user {claims.uid}")
-    hackathon, found = await hackathon_service.get_hackathon_by_id(hackathon_id)
+    hackathon = await hackathon_service.get_hackathon_by_id(hackathon_id)
 
-    if not found:
+    if not hackathon:
         logger.error(f"hackathon_get_by_id: {hackathon_id} not found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Хакатон не найден")
 

@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import HTTPAuthorizationCredentials
@@ -36,6 +36,7 @@ class HackerGetAllResponse(BaseModel):
 
 class HackerCreatePostRequest(BaseModel):
     name: str
+    role_ids: Optional[List[UUID]] = None
 
 
 class CreateHackerPostResponse(BaseModel):
@@ -96,6 +97,12 @@ async def upsert(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Не удалось создать или обновить хакатонщика"
         )
+    
+    # Если есть role_ids, добавляем их к хакеру
+    if request.role_ids:
+        roles_success = await hacker_service.update_hacker_roles_by_id(hacker_id, request.role_ids)
+        if not roles_success:
+            logger.warning(f"Failed to update roles for hacker_id={hacker_id}")
 
     return CreateHackerPostResponse(
         id=hacker_id,

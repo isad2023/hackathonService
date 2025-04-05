@@ -28,28 +28,6 @@ CREATE TABLE hacker_role_association (
     FOREIGN KEY (role_id) REFERENCES role (id) ON DELETE CASCADE
 );
 
--- Таблица team
-CREATE TABLE team (
-    id UUID PRIMARY KEY,
-    owner_id UUID NOT NULL,
-    name TEXT NOT NULL,
-    max_size INTEGER NOT NULL CHECK (max_size > 0),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    FOREIGN KEY (owner_id) REFERENCES hacker (id) ON DELETE CASCADE,
-
-    CONSTRAINT uq_team_owner_id_name UNIQUE (owner_id, name)
-);
-
--- Таблица для связи hacker и team (many-to-many)
-CREATE TABLE hacker_team_association (
-    hacker_id UUID NOT NULL,
-    team_id UUID NOT NULL,
-    PRIMARY KEY (hacker_id, team_id),
-    FOREIGN KEY (hacker_id) REFERENCES hacker (id) ON DELETE CASCADE,
-    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE
-);
-
 -- Таблица hackathon
 CREATE TABLE hackathon (
     id UUID PRIMARY KEY,
@@ -66,6 +44,30 @@ CREATE TABLE hackathon (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
     CONSTRAINT uq_name_start_of_hack UNIQUE (name, start_of_hack)
+);
+
+-- Таблица team
+CREATE TABLE team (
+    id UUID PRIMARY KEY,
+    owner_id UUID NOT NULL,
+    hackathon_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    max_size INTEGER NOT NULL CHECK (max_size > 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES hacker (id) ON DELETE CASCADE,
+    FOREIGN KEY (hackathon_id) REFERENCES hackathon (id) ON DELETE CASCADE,
+
+    CONSTRAINT uq_team_owner_id_name UNIQUE (owner_id, name)
+);
+
+-- Таблица для связи hacker и team (many-to-many)
+CREATE TABLE hacker_team_association (
+    hacker_id UUID NOT NULL,
+    team_id UUID NOT NULL,
+    PRIMARY KEY (hacker_id, team_id),
+    FOREIGN KEY (hacker_id) REFERENCES hacker (id) ON DELETE CASCADE,
+    FOREIGN KEY (team_id) REFERENCES team (id) ON DELETE CASCADE
 );
 
 -- Таблица winner_solution
