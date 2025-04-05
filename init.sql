@@ -61,10 +61,11 @@ CREATE TABLE hackathon (
     end_of_hack TIMESTAMP WITH TIME ZONE,
     amount_money FLOAT,
     type TEXT, -- "online" или "offline"
+    url TEXT, -- URL страницы хакатона
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
-    CONSTRAINT uq_hackathon_name_start UNIQUE (name, start_of_hack)
+    CONSTRAINT uq_name_start_of_hack UNIQUE (name, start_of_hack)
 );
 
 -- Таблица winner_solution

@@ -30,6 +30,7 @@ class HackathonService:
         end_of_hack: datetime,
         amount_money: float,
         type: str,
+        url: str = None,
     ) -> UUID:
         """
         Создаёт или обновляет хакатон.
@@ -37,7 +38,7 @@ class HackathonService:
         hackathon_id = await self.hackathon_repository.upsert_hackathon(
             name, task_description, start_of_registration,
             end_of_registration, start_of_hack, end_of_hack,
-            amount_money, type
+            amount_money, type, url
         )
 
         return hackathon_id
