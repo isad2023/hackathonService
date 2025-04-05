@@ -18,6 +18,7 @@ class Hackathon(Base, WithMetadata):
     end_of_hack = Column(DateTime, nullable=True)
     amount_money = Column(Float, nullable=True)
     type = Column(Text, nullable=True)  # \"online\" или \"offline\"
+    url = Column(Text, nullable=True)  # URL страницы хакатона
     winner_solutions = relationship("WinnerSolution", back_populates="hackathon", lazy='subquery')
 
     __table_args__ = (UniqueConstraint("name", "start_of_hack", name="uq_name_start_of_hack"),)

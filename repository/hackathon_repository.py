@@ -36,6 +36,7 @@ class HackathonRepository:
             end_of_hack: datetime,
             amount_money: float,
             type: str,
+            url: str = None,
     ) -> Optional[UUID]:
         """
         Создание нового хакатона.
@@ -49,15 +50,17 @@ class HackathonRepository:
             "end_of_hack": end_of_hack,
             "amount_money": amount_money,
             "type": type,
+            "url": url,
         })
 
-        stmt.on_conflict_do_update(constraint="uq_hackathon_name_start", set_={
+        stmt.on_conflict_do_update(constraint="uq_name_start_of_hack", set_={
             "task_description": task_description,
             "start_of_registration": start_of_registration,
             "end_of_registration": end_of_registration,
             "end_of_hack": end_of_hack,
             "amount_money": amount_money,
             "type": type,
+            "url": url,
             "updated_at": datetime.utcnow(),
         })
 

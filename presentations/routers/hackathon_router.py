@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status, Depends
@@ -22,13 +22,14 @@ hackathon_router = APIRouter(
 class HackathonDto(BaseModel):
     id: UUID
     name: str
-    task_description: str
-    start_of_registration: datetime
-    end_of_registration: datetime
-    start_of_hack: datetime
-    end_of_hack: datetime
-    amount_money: float
-    type: str
+    task_description: Optional[str] = None
+    start_of_registration: Optional[datetime] = None
+    end_of_registration: Optional[datetime] = None
+    start_of_hack: Optional[datetime] = None
+    end_of_hack: Optional[datetime] = None
+    amount_money: Optional[float] = None
+    type: Optional[str] = None
+    url: Optional[str] = None
 
 
 class HackathonGetAllResponse(BaseModel):
@@ -37,13 +38,14 @@ class HackathonGetAllResponse(BaseModel):
 
 class HackathonCreatePostRequest(BaseModel):
     name: str
-    task_description: str
-    start_of_registration: datetime
-    end_of_registration: datetime
-    start_of_hack: datetime
-    end_of_hack: datetime
-    amount_money: float
-    type: str
+    task_description: Optional[str] = None
+    start_of_registration: Optional[datetime] = None
+    end_of_registration: Optional[datetime] = None
+    start_of_hack: Optional[datetime] = None
+    end_of_hack: Optional[datetime] = None
+    amount_money: Optional[float] = None
+    type: Optional[str] = None
+    url: Optional[str] = None
 
 
 class HackathonCreatePostResponse(BaseModel):
@@ -53,13 +55,14 @@ class HackathonCreatePostResponse(BaseModel):
 class HackathonGetByIdResponse(BaseModel):
     id: UUID
     name: str
-    task_description: str
-    start_of_registration: datetime
-    end_of_registration: datetime
-    start_of_hack: datetime
-    end_of_hack: datetime
-    amount_money: float
-    type: str
+    task_description: Optional[str] = None
+    start_of_registration: Optional[datetime] = None
+    end_of_registration: Optional[datetime] = None
+    start_of_hack: Optional[datetime] = None
+    end_of_hack: Optional[datetime] = None
+    amount_money: Optional[float] = None
+    type: Optional[str] = None
+    url: Optional[str] = None
 
 
 @hackathon_router.get("/", response_model=HackathonGetAllResponse)
@@ -84,6 +87,7 @@ async def get_all_hackathons(credentials: HTTPAuthorizationCredentials = Depends
                 end_of_hack=hackathon.end_of_hack,
                 amount_money=hackathon.amount_money,
                 type=hackathon.type,
+                url=hackathon.url,
             )
             for hackathon in hackathons
         ]
@@ -110,6 +114,7 @@ async def upsert_hackathon(
         end_of_hack=request.end_of_hack,
         amount_money=request.amount_money,
         type=request.type,
+        url=request.url,
     )
 
     return HackathonCreatePostResponse(id=hackathon_id)
@@ -142,5 +147,6 @@ async def get_hackathon_by_id(
         end_of_hack=hackathon.end_of_hack,
         amount_money=hackathon.amount_money,
         type=hackathon.type,
+        url=hackathon.url,
     )
 
