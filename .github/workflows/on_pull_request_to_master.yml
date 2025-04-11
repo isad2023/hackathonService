@@ -1,4 +1,4 @@
-name: On release build and push to gchr.io
+name: On merged pull request build and push to gchr.io
 
 env:
   REGISTRY: ghcr.io
