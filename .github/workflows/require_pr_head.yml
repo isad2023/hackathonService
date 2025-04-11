@@ -1,8 +1,5 @@
 name: 'Require Pull Request Head'
 
-on:
-  pull_request:
-
 jobs:
   require-pr-dev-to-master:
     runs-on: ubuntu-latest
