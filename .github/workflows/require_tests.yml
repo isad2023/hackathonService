@@ -1,7 +1,7 @@
 name: 'Require Python Tests to Run OK'
 
 jobs:
-  test:
+  require-tests-ok:
     runs-on: ubuntu-latest
     strategy:
       matrix:
