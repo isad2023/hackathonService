@@ -5,8 +5,9 @@ env:
 
 on:
   workflow_dispatch:
-  release:
-    types: [published]
+  pull_request:
+    types: [closed]
+    branches: [master, main]
    
 jobs:
   build-and-push:
