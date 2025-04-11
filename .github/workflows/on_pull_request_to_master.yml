@@ -5,6 +5,8 @@ env:
 
 on:
   workflow_dispatch:
+  push:
+    branches: [master]
   pull_request:
     types: [closed]
     branches: [master, main]
@@ -12,11 +14,11 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
       packages: write
-      
+
     steps:
       - name: Set time zone
         uses: szenius/set-timezone@v1.2
@@ -39,7 +41,7 @@ jobs:
           password: ${{ secrets.GHCR_PUBLIC_TOKEN }}
 
       - name: Build Docker image
-        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:latest --no-cache
 
       - name: Push Docker image
-        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:latest
