@@ -19,10 +19,7 @@ jobs:
         run: echo "timestamp=$(date -u +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Build and push
-        uses: rdinit/itam_cicd@v1
-        with:
-          registry-url: ${{ secrets.REGISTRY_URL }}
-          registry-username: ${{ secrets.REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.GITHUB_TOKEN }} 
-          image-name: ${{ secrets.SERVICE_NAME }}:itam_hack_service${{ steps.timestamp.outputs.timestamp }}
+      - name: Build Docker image
+        run: docker build . -t ${{ secrets.REGISTRY_URL }}/${{ secrets.SERVICE_NAME }}/$itam_hack_service${{ steps.timestamp.outputs.timestamp }}
+      - name: Push Docker image
+        run: docker push ${{ secrets.REGISTRY_URL }}/${{ secrets.SERVICE_NAME }}/$itam_hack_service${{ steps.timestamp.outputs.timestamp }}
