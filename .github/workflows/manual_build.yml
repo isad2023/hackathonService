@@ -25,3 +25,9 @@ jobs:
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.GITHUB_TOKEN }} 
           image-name: ${{ secrets.SERVICE_NAME }}:${{ github.event.inputs.tag }}
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ secrets.SERVICE_NAME }}:${{ github.event.inputs.tag }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
