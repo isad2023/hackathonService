@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  check_branch:
+  require-pr-dev-to-master:
     runs-on: ubuntu-latest
     steps:
       - name: Require PR to master from dev
