@@ -18,12 +18,6 @@ jobs:
       packages: write
 
     steps:
-      - name: Check branch
-        if: github.base_ref == 'master' && github.head_ref != 'dev'
-        run: |
-          echo "ERROR: You can only merge to master from dev."
-          exit 1
-    
       - name: Generate timestamp
         id: timestamp
         if: always()
