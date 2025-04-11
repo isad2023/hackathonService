@@ -16,10 +16,11 @@ jobs:
     steps:
       - name: Generate timestamp
         id: timestamp
+        if: always()
         run: echo "timestamp=$(date -u +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build Docker image
         run: docker build . -t ${{ secrets.REGISTRY_URL }}/${{ secrets.SERVICE_NAME }}:itam_hack_service${{ steps.timestamp.outputs.timestamp }}
       - name: Push Docker image
-        run: docker push ${{ secrets.REGISTRY_URL }}/${{ secrets.SERVICE_NAME }}/$itam_hack_service${{ steps.timestamp.outputs.timestamp }}
+        run: docker push ${{ secrets.REGISTRY_URL }}/${{ secrets.SERVICE_NAME }}:itam_hack_service${{ steps.timestamp.outputs.timestamp }}
