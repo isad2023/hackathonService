@@ -18,6 +18,11 @@ jobs:
       packages: write
 
     steps:
+      - name: Set time zone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Europe/Moscow"
+    
       - name: Generate timestamp
         id: timestamp
         if: always()

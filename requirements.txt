@@ -12,3 +12,6 @@ beautifulsoup4==4.12.3
 requests==2.31.0
 aiohttp==3.9.5
 aiocron==1.8
+pytest==8.1.1
+pytest-asyncio==0.23.5
+pytest-dotenv==0.5.2
