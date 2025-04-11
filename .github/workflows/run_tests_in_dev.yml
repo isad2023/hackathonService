@@ -2,8 +2,6 @@ name: 'Python Tests on Pull Request to dev'
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [ dev ]
 
 jobs:
   test:
