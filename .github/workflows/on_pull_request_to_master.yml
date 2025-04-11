@@ -8,26 +8,26 @@ on:
   pull_request:
     types: [closed]
     branches: [master, main]
-   
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
+    
     permissions:
       contents: read
       packages: write
-
+      
     steps:
       - name: Set time zone
         uses: szenius/set-timezone@v1.2
         with:
           timezoneLinux: "Europe/Moscow"
-    
+
       - name: Generate timestamp
         id: timestamp
         if: always()
         run: echo "timestamp=$(date -u +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
-        
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -37,9 +37,9 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_PUBLIC_TOKEN }}
-        
+
       - name: Build Docker image
-        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:latest --no-cache
-      
+        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+
       - name: Push Docker image
-        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:latest
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
