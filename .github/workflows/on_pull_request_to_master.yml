@@ -39,7 +39,7 @@ jobs:
           password: ${{ secrets.GHCR_PUBLIC_TOKEN }}
         
       - name: Build Docker image
-        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:latest --no-cache-dir
       
       - name: Push Docker image
-        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:latest
