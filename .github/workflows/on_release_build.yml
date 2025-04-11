@@ -25,4 +25,4 @@ jobs:
           registry-url: ${{ secrets.REGISTRY_URL }}
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.GITHUB_TOKEN }} 
-          image-name: ${{ secrets.SERVICE_NAME }}:$itam_hack_service${{ steps.timestamp.outputs.timestamp }}
+          image-name: ${{ secrets.SERVICE_NAME }}:itam_hack_service${{ steps.timestamp.outputs.timestamp }}
