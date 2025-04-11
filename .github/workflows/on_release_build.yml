@@ -13,6 +13,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "timestamp=$(date -u +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build and push
@@ -21,4 +24,4 @@ jobs:
           registry-url: ${{ secrets.REGISTRY_URL }}
           registry-username: ${{ secrets.REGISTRY_USERNAME }}
           registry-password: ${{ secrets.GITHUB_TOKEN }} 
-          image-name: ${{ secrets.SERVICE_NAME }}:${{ github.event.inputs.tag }}
+          image-name: ${{ secrets.SERVICE_NAME }}:$itam_hack_service${{ steps.timestamp.outputs.timestamp }}
