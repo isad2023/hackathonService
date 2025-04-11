@@ -1,5 +1,11 @@
 name: 'Require Pull Request Head'
 
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened]
+    branches: [master]
+
 jobs:
   require-pr-dev-to-master:
     runs-on: ubuntu-latest

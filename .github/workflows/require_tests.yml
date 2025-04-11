@@ -1,5 +1,10 @@
 name: 'Require Python Tests to Run OK'
 
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened]
+
 jobs:
   require-tests-ok:
     runs-on: ubuntu-latest
