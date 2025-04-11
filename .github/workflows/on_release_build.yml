@@ -1,9 +1,7 @@
-name: On release build
+name: On release build and push to gchr.io
 
-permissions:
-  contents: read
-  packages: write
-
+env:
+  REGISTRY: ghcr.io
 
 on:
   workflow_dispatch:
@@ -11,16 +9,31 @@ on:
     types: [published]
    
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Generate timestamp
         id: timestamp
         if: always()
         run: echo "timestamp=$(date -u +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+        
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_PUBLIC_TOKEN }}
+        
       - name: Build Docker image
-        run: docker build . -t ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.SERVICE_NAME }}:itam_hack_service${{ steps.timestamp.outputs.timestamp }}
+        run: docker build . -t ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
+      
       - name: Push Docker image
-        run: docker push ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.SERVICE_NAME }}:itam_hack_service${{ steps.timestamp.outputs.timestamp }}
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.GHCR_USERNAME }}/${{ secrets.SERVICE_NAME }}:${{ steps.timestamp.outputs.timestamp }}
