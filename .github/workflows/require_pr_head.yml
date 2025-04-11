@@ -1,0 +1,14 @@
+name: 'Require Pull Request Head'
+
+on:
+  pull_request:
+
+jobs:
+  require-pr-dev-to-master:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require PR to master from dev
+        if: github.base_ref == 'master' && github.head_ref != 'dev'
+        run: |
+          echo "ERROR: You can only merge to main from dev."
+          exit 1
