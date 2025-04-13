@@ -13,13 +13,19 @@ on:
 
 jobs:
   build-and-push:
+    if: github.event.pull_request.merged == true
+  
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       packages: write
+    
 
     steps:
+      - run: |
+          echo The PR was merged
+    
       - name: Set time zone
         uses: szenius/set-timezone@v1.2
         with:
