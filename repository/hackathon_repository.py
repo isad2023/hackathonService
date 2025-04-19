@@ -36,6 +36,8 @@ class HackathonRepository:
             end_of_hack: datetime,
             amount_money: float,
             type: str,
+            city: Optional[str],
+            approved: bool,
             url: str = None,
     ) -> Optional[UUID]:
         """
@@ -50,6 +52,8 @@ class HackathonRepository:
             "end_of_hack": end_of_hack,
             "amount_money": amount_money,
             "type": type,
+            "city": city,
+            "approved": approved,
             "url": url,
         })
 
@@ -60,6 +64,8 @@ class HackathonRepository:
             "end_of_hack": end_of_hack,
             "amount_money": amount_money,
             "type": type,
+            "city": city,
+            "approved": approved,
             "url": url,
             "updated_at": datetime.utcnow(),
         })

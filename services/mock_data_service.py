@@ -134,7 +134,9 @@ class MockDataService:
                 "start_date": "2024-01-01",
                 "duration_days": 21,
                 "amount_money": 10000.0,
-                "type": "offline"
+                "type": "offline",
+                "city": "Moscow",
+                "approved": True,
             },
             {
                 "name": "AI Revolution Challenge",
@@ -142,7 +144,9 @@ class MockDataService:
                 "start_date": "2024-02-15",
                 "duration_days": 14,
                 "amount_money": 15000.0,
-                "type": "online"
+                "type": "online",
+                "city": "Novosibirsk",
+                "approved": False,
             },
             {
                 "name": "Sustainable Tech Hackathon",
@@ -150,7 +154,9 @@ class MockDataService:
                 "start_date": "2024-03-10",
                 "duration_days": 30,
                 "amount_money": 20000.0,
-                "type": "hybrid"
+                "type": "hybrid",
+                "city": "",
+                "approved": True,
             },
             {
                 "name": "Fintech Innovation Cup",
@@ -158,7 +164,9 @@ class MockDataService:
                 "start_date": "2024-04-05",
                 "duration_days": 10,
                 "amount_money": 12500.0,
-                "type": "online"
+                "type": "online",
+                "city": "Moscow",
+                "approved": False,
             },
             {
                 "name": "Smart Cities Hackathon",
@@ -166,10 +174,12 @@ class MockDataService:
                 "start_date": "2024-05-20",
                 "duration_days": 15,
                 "amount_money": 18000.0,
-                "type": "offline"
+                "type": "offline",
+                "city": "New-York",
+                "approved": True,
             }
         ]
-        
+
         logger.info("Creating multiple hackathons...")
         for hack_data in hackathon_data:
             start_date = datetime.strptime(hack_data["start_date"], "%Y-%m-%d")
@@ -191,6 +201,8 @@ class MockDataService:
                     end_of_hack=end_of_hack,
                     amount_money=hack_data["amount_money"],
                     type=hack_data["type"],
+                    city=hack_data["city"],
+                    approved=hack_data["approved"],
                 )
                 
                 if hackathon_id:

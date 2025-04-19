@@ -39,6 +39,8 @@ CREATE TABLE hackathon (
     end_of_hack TIMESTAMP WITH TIME ZONE,
     amount_money FLOAT,
     type TEXT, -- "online" или "offline"
+    city TEXT,
+    approved BOOLEAN DEFAULT FALSE NOT NULL,
     url TEXT, -- URL страницы хакатона
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

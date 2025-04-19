@@ -18,6 +18,8 @@ class Hackathon(Base, WithMetadata):
     end_of_hack = Column(DateTime, nullable=True)
     amount_money = Column(Float, nullable=True)
     type = Column(Text, nullable=True)  # \"online\" или \"offline\"
+    city = Column(Text, nullable=True)
+    approved = Column(Boolean, nullable=False, default=False)
     url = Column(Text, nullable=True)  # URL страницы хакатона
     winner_solutions = relationship("WinnerSolution", back_populates="hackathon", lazy='subquery')
     teams = relationship("Team", back_populates="hackathon", lazy='subquery')
