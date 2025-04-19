@@ -30,6 +30,8 @@ class HackathonService:
         end_of_hack: datetime,
         amount_money: float,
         type: str,
+        city: Optional[str],
+        approved: bool,
         url: str = None,
     ) -> UUID:
         """
@@ -38,7 +40,7 @@ class HackathonService:
         hackathon_id = await self.hackathon_repository.upsert_hackathon(
             name, task_description, start_of_registration,
             end_of_registration, start_of_hack, end_of_hack,
-            amount_money, type, url
+            amount_money, type, city, approved, url
         )
 
         return hackathon_id

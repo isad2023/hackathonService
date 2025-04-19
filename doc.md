@@ -110,6 +110,8 @@
 - end_of_hack (DateTime)
 - amount_money (Float)
 - type (String)
+- city (String)
+- approved (Boolean)
 - url (String)
 
 ### Hacker

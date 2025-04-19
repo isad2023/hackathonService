@@ -29,6 +29,8 @@ class HackathonDto(BaseModel):
     end_of_hack: Optional[datetime] = None
     amount_money: Optional[float] = None
     type: Optional[str] = None
+    city: Optional[str] = None
+    approved: bool = None
     url: Optional[str] = None
 
 
@@ -45,6 +47,8 @@ class HackathonCreatePostRequest(BaseModel):
     end_of_hack: Optional[datetime] = None
     amount_money: Optional[float] = None
     type: Optional[str] = None
+    city: Optional[str] = None
+    approved: bool = None
     url: Optional[str] = None
 
 
@@ -62,6 +66,8 @@ class HackathonGetByIdResponse(BaseModel):
     end_of_hack: Optional[datetime] = None
     amount_money: Optional[float] = None
     type: Optional[str] = None
+    city: Optional[str] = None
+    approved: bool = None
     url: Optional[str] = None
 
 
@@ -87,6 +93,8 @@ async def get_all_hackathons(credentials: HTTPAuthorizationCredentials = Depends
                 end_of_hack=hackathon.end_of_hack,
                 amount_money=hackathon.amount_money,
                 type=hackathon.type,
+                city=hackathon.city,
+                approved=hackathon.approved,
                 url=hackathon.url,
             )
             for hackathon in hackathons
@@ -114,6 +122,8 @@ async def upsert_hackathon(
         end_of_hack=request.end_of_hack,
         amount_money=request.amount_money,
         type=request.type,
+        city=request.city,
+        approved=request.approved,
         url=request.url,
     )
 
@@ -147,6 +157,8 @@ async def get_hackathon_by_id(
         end_of_hack=hackathon.end_of_hack,
         amount_money=hackathon.amount_money,
         type=hackathon.type,
+        city=hackathon.city,
+        approved=hackathon.approved,
         url=hackathon.url,
     )
 
