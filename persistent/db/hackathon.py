@@ -12,7 +12,6 @@ class Hackathon(Base, WithMetadata):
 
     name = Column(Text, nullable=False)
     task_description = Column(Text, nullable=True)
-    start_of_registration = Column(DateTime, nullable=True)
     end_of_registration = Column(DateTime, nullable=True)
     start_of_hack = Column(DateTime, nullable=False)
     end_of_hack = Column(DateTime, nullable=True)
@@ -20,7 +19,8 @@ class Hackathon(Base, WithMetadata):
     type = Column(Text, nullable=True)  # \"online\" или \"offline\"
     city = Column(Text, nullable=True)
     approved = Column(Boolean, nullable=False, default=False)
-    url = Column(Text, nullable=True)  # URL страницы хакатона
+    url = Column(Text, nullable=True, unique=True)  # URL страницы хакатона (уникальное поле)
+    url_image = Column(Text, nullable=True)  # URL изображения хакатона
     winner_solutions = relationship("WinnerSolution", back_populates="hackathon", lazy='subquery')
     teams = relationship("Team", back_populates="hackathon", lazy='subquery')
 

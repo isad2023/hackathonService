@@ -29,24 +29,23 @@ class HackathonRepository:
     async def upsert_hackathon(
             self,
             name: str,
-            task_description: str,
-            start_of_registration: datetime,
-            end_of_registration: datetime,
+            task_description: Optional[str],
+            end_of_registration: Optional[datetime],
             start_of_hack: datetime,
-            end_of_hack: datetime,
-            amount_money: float,
-            type: str,
+            end_of_hack: Optional[datetime],
+            amount_money: Optional[float],
+            type: Optional[str],
             city: Optional[str],
             approved: bool,
-            url: str = None,
+            url: Optional[str] = None,
+            url_image: Optional[str] = None,
     ) -> Optional[UUID]:
         """
-        Создание нового хакатона.
+        Создание или обновление хакатона.
         """
         stmt = insert(Hackathon).values({
             "name": name,
             "task_description": task_description,
-            "start_of_registration": start_of_registration,
             "end_of_registration": end_of_registration,
             "start_of_hack": start_of_hack,
             "end_of_hack": end_of_hack,
@@ -55,11 +54,11 @@ class HackathonRepository:
             "city": city,
             "approved": approved,
             "url": url,
+            "url_image": url_image,
         })
 
-        stmt.on_conflict_do_update(constraint="uq_name_start_of_hack", set_={
+        stmt = stmt.on_conflict_do_update(constraint="uq_name_start_of_hack", set_={
             "task_description": task_description,
-            "start_of_registration": start_of_registration,
             "end_of_registration": end_of_registration,
             "end_of_hack": end_of_hack,
             "amount_money": amount_money,
@@ -67,6 +66,7 @@ class HackathonRepository:
             "city": city,
             "approved": approved,
             "url": url,
+            "url_image": url_image,
             "updated_at": datetime.utcnow(),
         })
 

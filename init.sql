@@ -33,7 +33,6 @@ CREATE TABLE hackathon (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
     task_description TEXT,
-    start_of_registration TIMESTAMP WITH TIME ZONE,
     end_of_registration TIMESTAMP WITH TIME ZONE,
     start_of_hack TIMESTAMP WITH TIME ZONE NOT NULL,
     end_of_hack TIMESTAMP WITH TIME ZONE,
@@ -41,7 +40,8 @@ CREATE TABLE hackathon (
     type TEXT, -- "online" или "offline"
     city TEXT,
     approved BOOLEAN DEFAULT FALSE NOT NULL,
-    url TEXT, -- URL страницы хакатона
+    url TEXT UNIQUE, -- URL страницы хакатона (уникальное поле)
+    url_image TEXT, -- URL изображения хакатона
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
@@ -88,3 +88,11 @@ CREATE TABLE winner_solution (
 
     CONSTRAINT uq_winner_solution_hackathon_id_team_id UNIQUE (hackathon_id, team_id)
 );
+
+-- Вставка базовых ролей
+INSERT INTO role (id, name) VALUES 
+    ('550e8400-e29b-41d4-a716-446655440001', 'Developer'),
+    ('550e8400-e29b-41d4-a716-446655440002', 'Designer'),
+    ('550e8400-e29b-41d4-a716-446655440003', 'Project Manager'),
+    ('550e8400-e29b-41d4-a716-446655440004', 'Data Scientist'),
+    ('550e8400-e29b-41d4-a716-446655440005', 'QA Engineer');
