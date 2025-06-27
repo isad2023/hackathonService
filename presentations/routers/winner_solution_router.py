@@ -55,7 +55,7 @@ class WinnerSolutionGetByIdResponse(BaseModel):
     team_id: UUID
 
 
-@winner_solution_router.get("/", response_model=WinnerSolutionGetAllResponse)
+@winner_solution_router.get("/all", response_model=WinnerSolutionGetAllResponse)
 async def get_all(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Получить список всех призерских решений.

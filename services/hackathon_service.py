@@ -23,24 +23,24 @@ class HackathonService:
     async def upsert_hackathon(
         self,
         name: str,
-        task_description: str,
-        start_of_registration: datetime,
-        end_of_registration: datetime,
+        task_description: Optional[str],
+        end_of_registration: Optional[datetime],
         start_of_hack: datetime,
-        end_of_hack: datetime,
-        amount_money: float,
-        type: str,
+        end_of_hack: Optional[datetime],
+        amount_money: Optional[float],
+        type: Optional[str],
         city: Optional[str],
         approved: bool,
-        url: str = None,
+        url: Optional[str] = None,
+        url_image: Optional[str] = None,
     ) -> UUID:
         """
         Создаёт или обновляет хакатон.
         """
         hackathon_id = await self.hackathon_repository.upsert_hackathon(
-            name, task_description, start_of_registration,
-            end_of_registration, start_of_hack, end_of_hack,
-            amount_money, type, city, approved, url
+            name, task_description, end_of_registration,
+            start_of_hack, end_of_hack, amount_money, type, 
+            city, approved, url, url_image
         )
 
         return hackathon_id

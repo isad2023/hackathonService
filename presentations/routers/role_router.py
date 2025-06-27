@@ -27,7 +27,7 @@ class RoleGetAllResponse(BaseModel):
     roles: List[RoleDto]
 
 
-@role_router.get("/", response_model=RoleGetAllResponse)
+@role_router.get("/all", response_model=RoleGetAllResponse)
 async def get_all_roles(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Получить список всех ролей.
